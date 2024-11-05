@@ -41,7 +41,11 @@ jobs:
               uses: allure-framework/setup-allurectl@v1
 
             - name: Test solution
+                
               run: allurectl watch -- dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
               env:
                 ALLURE_RESULTS: build/allure-results
               continue-on-error: true
+              
+            - name: List Allure results
+              run: ls -la build/allure-results

@@ -1,7 +1,7 @@
 ﻿{
   "$schema": "https://raw.githubusercontent.com/allure-framework/allure-csharp/2.10.0/Allure.NUnit/Schemas/allureConfig.schema.json",
   "allure": {
-    "directory": "./home/runner/work/allure-nunit-testops/allure-nunit-testops/build/allure-results",
+    "directory": "../../../../allure-results",
     "brokenTestData": ["System.Exception"]
   }
 }
