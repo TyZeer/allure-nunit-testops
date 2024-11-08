@@ -3,11 +3,28 @@ name: Allure Report
 env:
     SOLUTION_FILE: Allure.Examples.NUnit3.sln
     BUILD_CONFIGURATION: Debug
+    ALLURE_RESULTS: "allure-results"
+    ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
 
 on:
-  push:
-    branches-ignore:
-      - '!main'
+  workflow_dispatch:
+    inputs:
+      GITHUB_TESTS_ENDPOINT:
+        description: "System under test"
+        required: true
+        default: https://system.under.test
+      GITHUB_TESTS_BROWSER:
+        description: "Browser to be used in tests"
+        required: true
+        default: chrome
+      ALLURE_JOB_RUN_ID:
+        description: "ALLURE_JOB_RUN_ID is service parameter required for triggering workflows from Allure TestOps. Leave blank."
+        required: false
+      ALLURE_USERNAME:
+        description: "ALLURE_USERNAME service parameter. Leave blank"
+        required: false
+      
+
 
 jobs:
     autotests:
@@ -27,30 +44,19 @@ jobs:
 
             - name: Build solution
               run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
-
+            - name: install and configure allurectl using GH Action
+              uses: allure-framework/setup-allurectl@v1
+              with:
+                  allure-endpoint: https://demo.testops.cloud
+                  allure-token: ${{ secrets.ALLURE_TOKEN }}
+                  allure-project-id: 9999
+            
             - name: Test solution
-              run: dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
+              run: allurectl watch -- dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
               continue-on-error: true
+              env:
+                GITHUB_TESTS_ENDPOINT: ${{ github.event.inputs.GITHUB_TESTS_ENDPOINT }}
+                GITHUB_TESTS_BROWSER: ${{ github.event.inputs.GITHUB_TESTS_BROWSER }}
+                GITHUB_TESTS_BRANCH: ${{ github.ref_name }}
 
-            - name: Get Allure history
-              uses: actions/checkout@v4
-              if: always()
-              continue-on-error: true
-              with:
-                ref: gh-pages
-                path: gh-pages
-
-            - name: Generate Allure Report
-              uses: simple-elf/allure-report-action@v1.7
-              if: always()
-              with:
-                allure_results: allure-results
-                allure_history: allure-history
-
-            - name: Deploy report to GitHub Pages
-              if: always()
-              uses: peaceiris/actions-gh-pages@v3
-              with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
-                publish_dir: allure-history
-                publish_branch: gh-pages
+            
