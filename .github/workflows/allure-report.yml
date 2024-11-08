@@ -47,3 +47,7 @@ jobs:
               env:
                 ALLURE_RESULTS: ${{ env.ALLURE_RESULTS }}
               continue-on-error: true
+
+            - name: List Allure Results Directory
+              run: tree
+            
