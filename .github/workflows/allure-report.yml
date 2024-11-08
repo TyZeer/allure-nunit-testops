@@ -16,7 +16,7 @@ env:
     ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
     ALLURE_ENDPOINT: https://pavlovallureops.testops.cloud/
     ALLURE_PROJECT_ID: 34
-    ALLURE_RESULTS: allure-results
+    ALLURE_RESULTS: tests/allure-results
 
 jobs:
     autotests:
@@ -41,9 +41,7 @@ jobs:
               uses: allure-framework/setup-allurectl@v1
 
             - name: Run tests and collect Allure results
-              run: |
-                mkdir -p ${{ env.ALLURE_RESULTS }}
-                allurectl watch -- dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
+              run: allurectl watch -- dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
               env:
                 ALLURE_RESULTS: ${{ env.ALLURE_RESULTS }}
               continue-on-error: true
