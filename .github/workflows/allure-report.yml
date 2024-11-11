@@ -2,21 +2,12 @@ name: Allure Report
 
 on:
   push:
-  workflow_dispatch:
-    inputs:
-      ALLURE_JOB_RUN_ID:
-        description: ALLURE_JOB_RUN_ID service parameter. Leave blank.
-      ALLURE_USERNAME:
-        description: ALLURE_USERNAME service parameter. Leave blank.
+    branches: ["testIT"]
 
 env:
     SOLUTION_FILE: Allure.Examples.NUnit3.sln
     BUILD_CONFIGURATION: Debug
-    ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-    ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
-    ALLURE_ENDPOINT: https://artemevtestops.testops.cloud/
-    ALLURE_PROJECT_ID: 34
-    ALLURE_RESULTS: tests/allure-results
+    ALLURE_RESULTS: build/allure-results
 
 jobs:
     autotests:
@@ -37,15 +28,23 @@ jobs:
             - name: Build solution
               run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
 
-            - name: Install allurectl
-              uses: allure-framework/setup-allurectl@v1
-
-            - name: Run tests and collect Allure results
-              run: allurectl watch -- dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
+            - name: Test solution
+                
+              run: dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
               env:
                 ALLURE_RESULTS: ${{ env.ALLURE_RESULTS }}
               continue-on-error: true
 
-            - name: List Allure Results Directory
-              run: tree
-            
+            - name: Submit results
+              if: always()
+              run: |
+                pip install testit-cli
+                testit results import \
+                  --url  https://team-nchk.testit.software/projects/1/tests\
+                  --project-id 5236eb3f-7c05-46f9-a609-dc0278896464 \
+                  --configuration-id 15dbb164-c1aa-4cbf-830c-8c01ae14f4fb \
+                  --testrun-name "GitHub test run" \
+                  --results results/test-results.xml
+
+            - name: List Allure results
+              run: tree -d / > tree 
