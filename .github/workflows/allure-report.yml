@@ -42,7 +42,7 @@ jobs:
                 export TMS_TOKEN=Wk1kYVNZdnpBMVFlcnpUQjZk
                 testit results import -t Wk1kYVNZdnpBMVFlcnpUQjZk \
                   --url  https://team-nchk.testit.software\
-                  --project-id 5236eb3f-7c05-46f9-a609-dc0278896464 \
+                  --project-id 1 \
                   --configuration-id 15dbb164-c1aa-4cbf-830c-8c01ae14f4fb \
                   --testrun-name "GitHub test run" \
                   --results results/test-results.xml
