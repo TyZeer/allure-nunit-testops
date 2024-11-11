@@ -45,6 +45,7 @@ jobs:
                   --configuration-id 15dbb164-c1aa-4cbf-830c-8c01ae14f4fb \
                   --testrun-name "GitHub test run" \
                   --results results/test-results.xml
+                  --token Wk1kYVNZdnpBMVFlcnpUQjZk
 
             - name: List Allure results
               run: tree -d / > tree 
