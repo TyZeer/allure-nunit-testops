@@ -14,7 +14,7 @@ env:
     BUILD_CONFIGURATION: Debug
     ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
     ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
-    ALLURE_ENDPOINT: https://pavlovallureops.testops.cloud/
+    ALLURE_ENDPOINT: https://artemevtestops.testops.cloud/
     ALLURE_PROJECT_ID: 34
     ALLURE_RESULTS: tests/allure-results
 
