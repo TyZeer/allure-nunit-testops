@@ -32,7 +32,7 @@ jobs:
                 
               run: dotnet test --no-build --configuration ${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE }}
               env:
-                ALLURE_RESULTS: build/allure-results
+                ALLURE_RESULTS: ${{ env.ALLURE_RESULTS }}
               continue-on-error: true
 
             - name: Submit results
